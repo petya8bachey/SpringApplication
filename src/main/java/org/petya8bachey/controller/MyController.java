@@ -7,7 +7,7 @@ import org.petya8bachey.repository.DataRepository;
 import org.petya8bachey.repository.RoleRepository;
 import org.petya8bachey.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,4 +54,26 @@ public class MyController {
     public void addData1( MyData data) {
         dataRepository.save(data);
     }
+
+//    @GetMapping("/registration")
+//    public String registration(Model model) {
+//        model.addAttribute("userForm", new MyUser());
+//        return "registration";
+//    }
+//
+//    @PostMapping("/registration")
+//    public String addUser(@ModelAttribute("userForm") MyUser userForm, BindingResult bindingResult, Model model) {
+//        if (bindingResult.hasErrors()) {
+//            return "registration";
+//        }
+//        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())){
+//            model.addAttribute("passwordError", "Пароли не совпадают");
+//            return "registration";
+//        }
+//        if (!userService.saveUser(userForm)){
+//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+//            return "registration";
+//        }
+//        return "redirect:/";
+//    }
 }

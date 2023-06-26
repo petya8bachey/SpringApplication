@@ -11,7 +11,7 @@ import java.util.Set;
 public class MyUser implements UserDetails {
     @Id @GeneratedValue
     public Integer ID;
-    public String name;
+    public String username;
     public String password;
     @ManyToMany
     public Set<MyRole> roles;
@@ -28,7 +28,7 @@ public class MyUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

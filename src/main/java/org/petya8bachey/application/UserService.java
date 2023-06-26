@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,7 +21,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         MyUser user = userRepository.findByUsername(username);
@@ -42,7 +43,7 @@ public class UserService implements UserDetailsService {
         if (userFromDB != null)
             return false;
         user.roles = Collections.singleton(new MyRole(1, "ROLE_USER"));
-        user.password = (bCryptPasswordEncoder.encode(user.getPassword()));
+        user.password = (passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
