@@ -17,6 +17,12 @@ public class MyUser implements UserDetails {
     @ManyToMany
     public Set<MyRole> roles;
 
+    public MyUser(){}
+    public MyUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;

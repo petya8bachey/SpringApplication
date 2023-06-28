@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class MyController {
     @Autowired
@@ -24,33 +26,30 @@ public class MyController {
     UserService userService;
 
     @GetMapping("/help")
-    public String help() {
-        System.out.println("Hello");
+    public String getHelp() {
         return "hello";
+    }
+    @PostMapping("/help")
+    public String postHelp(@RequestParam(name = "1") String string, @RequestParam(name = "2") String string1) {
+        return string + string1;
     }
 
     @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("userForm", new MyUser());
-        return "registration";
+    public MyPacket<String> registration() {
+        return new MyPacket(null, "Use POST request");
     }
 
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute("userForm") MyUser userForm, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "registration";
+    public MyPacket<String> addUser(@RequestParam(name = "username") String username,
+                          @RequestParam(name = "password") String password) {
+        if (!userService.saveUser(new MyUser(username, password))){
+            return new MyPacket(null, "Username is busy");
         }
-        if (!userService.saveUser(userForm)){
-            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-            return "registration";
-        }
-        return "redirect:/";
+        return new MyPacket("Registration is done");
     }
     @GetMapping("/admin")
-    @Secured("ADMIN")
-    public String userList(Model model) {
-        model.addAttribute("allUsers", userService.allUsers());
-        return "admin";
+    public MyPacket<List> userList() {
+        return new MyPacket(userService.allUsers());
     }
     @PostMapping("/admin")
     public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Integer userId,

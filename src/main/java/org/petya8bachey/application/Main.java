@@ -32,7 +32,6 @@ public class Main implements CommandLineRunner {
     @Override
     public void run(String... args){
         System.out.println("Hello");
-        System.out.println(controller.help());
         // System.exit(0);
     }
 }
