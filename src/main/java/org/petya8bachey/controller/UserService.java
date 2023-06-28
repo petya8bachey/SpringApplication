@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         MyUser userFromDB = userRepository.findByUsername(user.getUsername());
         if (userFromDB != null)
             return false;
-        user.roles = Collections.singleton(roleRepository.findByName("USER"));
+        user.roles = Collections.singleton(roleRepository.findByName("ROLE_USER"));
         user.password = (passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
@@ -56,9 +56,5 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
-    }
-    public List<MyUser> usergtList(Integer idMin) {
-        return entityManager.createQuery("SELECT u FROM my_user u WHERE u.id > :paramId", MyUser.class)
-                .setParameter("paramId", idMin).getResultList();
     }
 }
