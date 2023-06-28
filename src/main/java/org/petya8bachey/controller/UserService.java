@@ -17,8 +17,6 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-    @PersistenceContext
-    EntityManager entityManager;
     @Autowired
     RoleRepository roleRepository;
     @Autowired
@@ -31,10 +29,6 @@ public class UserService implements UserDetailsService {
         if (user == null)
             throw new UsernameNotFoundException("User not found");
         return user;
-    }
-    public MyUser findUserById(Integer userId) {
-        Optional<MyUser> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new MyUser());
     }
 
     public List<MyUser> allUsers() {
@@ -49,12 +43,5 @@ public class UserService implements UserDetailsService {
         user.password = (passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
-    }
-    public boolean deleteUser(Integer userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
     }
 }
