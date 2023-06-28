@@ -56,8 +56,11 @@ public class MyController {
     @PostMapping("/data/delete")
     @Secured("ROLE_USER")
     public MyPacket<String> deleteData(@RequestParam("id") Integer id) {
-        dataRepository.deleteById(id);
-        return new MyPacket<>("Data delete");
+        if(userRepository.findById(id).isPresent()) {
+            dataRepository.deleteById(id);
+            return new MyPacket<>("Data delete");
+        }
+        return new MyPacket<>(null, "Id isn't found");
     }
 
     @GetMapping("/data/get")
@@ -78,8 +81,11 @@ public class MyController {
     @PostMapping("/admin/delete")
     @Secured("ROLE_ADMIN")
     public MyPacket<String> deleteUser(@RequestParam("id") Integer userId) {
-        userService.deleteUser(userId);
-        return new MyPacket<>("User delete");
+        if (userRepository.findById(userId).isPresent()) {
+            userRepository.deleteById(userId);
+            return new MyPacket<>("User delete");
+        }
+        return new MyPacket<>(null, "User isn't found");
     }
 
     @GetMapping("/admin/get")

@@ -11,4 +11,5 @@ public class MyData {
     public MyData(String data) {
         this.data = data;
     }
+    public MyData() {}
 }
