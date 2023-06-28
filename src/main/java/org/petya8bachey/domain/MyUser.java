@@ -1,15 +1,16 @@
 package org.petya8bachey.domain;
 
-import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
 @Entity @Table
 public class MyUser implements UserDetails {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     public Integer ID;
     public String username;
     public String password;
@@ -33,21 +34,21 @@ public class MyUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

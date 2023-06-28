@@ -7,7 +7,9 @@ import org.petya8bachey.repository.DataRepository;
 import org.petya8bachey.repository.RoleRepository;
 import org.petya8bachey.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,62 +20,50 @@ public class MyController {
     RoleRepository roleRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserService userService;
 
-    @GetMapping("/reg")
-    public String helloWorld() {
+    @GetMapping("/help")
+    public String help() {
+        System.out.println("Hello");
         return "hello";
     }
 
-    @PostMapping("/add/data")
-    public void addData(@RequestBody MyData data) {
-        dataRepository.save(data);
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("userForm", new MyUser());
+        return "registration";
     }
 
-    @PostMapping("/add/user")
-    public void addUser(@RequestBody MyUser user) {
-        userRepository.save(user);
-    }
-
-    @PostMapping("/add/role")
-    public void addRole(@RequestBody MyRole role) {
-        roleRepository.save(role);
-    }
-
-    @GetMapping("/get/data")
-    @ResponseBody
-    public MyPacket<MyData> getData(@RequestBody Integer ID) {
-        MyPacket<MyData> data = new MyPacket<MyData>();
-        if (dataRepository.existsById(ID)) {
-            data.data = dataRepository.findById(ID).orElse(new MyData());
-        } else {
-            data.description = "ID not find";
+    @PostMapping("/registration")
+    public String addUser(@ModelAttribute("userForm") MyUser userForm, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "registration";
         }
-        return data;
+        if (!userService.saveUser(userForm)){
+            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+            return "registration";
+        }
+        return "redirect:/";
     }
-
-    public void addData1( MyData data) {
-        dataRepository.save(data);
+    @GetMapping("/admin")
+    @Secured("ADMIN")
+    public String userList(Model model) {
+        model.addAttribute("allUsers", userService.allUsers());
+        return "admin";
     }
-
-//    @GetMapping("/registration")
-//    public String registration(Model model) {
-//        model.addAttribute("userForm", new MyUser());
-//        return "registration";
-//    }
-//
-//    @PostMapping("/registration")
-//    public String addUser(@ModelAttribute("userForm") MyUser userForm, BindingResult bindingResult, Model model) {
-//        if (bindingResult.hasErrors()) {
-//            return "registration";
-//        }
-//        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())){
-//            model.addAttribute("passwordError", "Пароли не совпадают");
-//            return "registration";
-//        }
-//        if (!userService.saveUser(userForm)){
-//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-//            return "registration";
-//        }
-//        return "redirect:/";
-//    }
+    @PostMapping("/admin")
+    public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Integer userId,
+                              @RequestParam(required = true, defaultValue = "" ) String action,
+                              Model model) {
+        if (action.equals("delete")){
+            userService.deleteUser(userId);
+        }
+        return "redirect:/admin";
+    }
+    @GetMapping("/admin/gt/{userId}")
+    public String  gtUser(@PathVariable("userId") Integer userId, Model model) {
+        model.addAttribute("allUsers", userService.usergtList(userId));
+        return "admin";
+    }
 }

@@ -1,6 +1,6 @@
 package org.petya8bachey.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity @Table
 public class MyData {
